@@ -116,8 +116,10 @@
 		4399C44F2D343F4D0047DD20 /* TheMovieDB */ = {
 			isa = PBXGroup;
 			children = (
-				4399C4502D343F4D0047DD20 /* AppDelegate.swift */,
-				4399C4522D343F4D0047DD20 /* SceneDelegate.swift */,
+				4399C4832D3461B40047DD20 /* App */,
+				4399C4822D345BD70047DD20 /* Domain */,
+				4399C4812D345BCB0047DD20 /* Data */,
+				4399C4802D345BB30047DD20 /* Presentation */,
 				4399C4542D343F4D0047DD20 /* ViewController.swift */,
 				4399C4562D343F4D0047DD20 /* Main.storyboard */,
 				4399C4592D343F4F0047DD20 /* Assets.xcassets */,
@@ -144,6 +146,36 @@
 			path = TheMovieDBUITests;
 			sourceTree = "<group>";
 		};
+		4399C4802D345BB30047DD20 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		4399C4812D345BCB0047DD20 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		4399C4822D345BD70047DD20 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		4399C4832D3461B40047DD20 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				4399C4502D343F4D0047DD20 /* AppDelegate.swift */,
+				4399C4522D343F4D0047DD20 /* SceneDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 		A68C55FC18EBD1D81AFE3AE8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -164,7 +196,6 @@
 				6599D13AFEC9FD1B80016D01 /* Pods-TheMovieDBTests.debug.xcconfig */,
 				66C5AE9D16A570A297B81F05 /* Pods-TheMovieDBTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
