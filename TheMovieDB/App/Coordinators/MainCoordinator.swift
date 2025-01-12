@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainCoordinator {
+class MainCoordinator: Coordinator {
     private let navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
@@ -15,22 +15,11 @@ class MainCoordinator {
     }
     
     func start() {
-        let movieListVC = createMovieListViewController()
-        navigationController.setViewControllers([movieListVC], animated: false)
+        showMovieList()
     }
     
-    private func createMovieListViewController() -> UIViewController {
-        let viewModel = MovieListViewModel(repository: MovieRepository(networkManager: NetworkManager()))
-        let viewController = MovieListViewController(viewModel: viewModel)
-        viewModel.didSelectMovie = { [weak self] movie in
-            self?.navigateToMovieDetails(movie: movie)
-        }
-        return viewController
-    }
-    
-    private func navigateToMovieDetails(movie: Movie) {
-        let viewModel = MovieDetailsViewModel(movie: movie)
-        let detailsVC = MovieDetailsViewController(viewModel: viewModel)
-        navigationController.pushViewController(detailsVC, animated: true)
+    func showMovieList() {
+        let movieListCoordinator = MovieListCoordinator(navigationController: navigationController)
+        movieListCoordinator.start()
     }
 }
