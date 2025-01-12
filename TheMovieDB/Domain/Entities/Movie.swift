@@ -6,16 +6,16 @@
 //
 
 import Foundation
-struct MovieResponse: Codable {
-    let results : [Movie]
+
+struct APIResponse<T: Decodable>: Decodable {
+    let results: [T]
 }
 
-struct Movie: Codable {
-    
-    var id: Int
-    var title: String
-    var overview: String
-    var posterPath: String?
+struct Movie: Decodable {
+    let id: Int
+    let title: String
+    let overview: String
+    let posterPath: String
     var backdropPath: String?
     var releaseDate: String?
     var voteAverage: Double
@@ -23,12 +23,8 @@ struct Movie: Codable {
     var adult: Bool
     var originalLanguage: String?
     
-    
     enum CodingKeys: String, CodingKey {
-        
-        case id
-        case title = "name"
-        case overview
+        case id, title, overview
         case posterPath = "poster_path"
         case backdropPath = "backdrop_path"
         case releaseDate = "first_air_date"
@@ -37,5 +33,4 @@ struct Movie: Codable {
         case adult
         case originalLanguage = "original_language"
     }
-    
 }
