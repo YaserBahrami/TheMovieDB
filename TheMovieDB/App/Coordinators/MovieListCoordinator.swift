@@ -18,7 +18,12 @@ class MovieListCoordinator: Coordinator {
     
     func start() {
         let movieRepository = MovieRepository(networkManager: networkManager)
-        let movieListViewModel = MovieListViewModel(repository: movieRepository)
+        
+        let fetchPopularMoviesUseCase = FetchPopularMoviesUseCase(movieRepository: movieRepository)
+        let searchMoviesUseCase = SearchMoviesUseCase(movieRepository: movieRepository)
+        
+        let movieListViewModel = MovieListViewModel(fetchPopularMoviesUseCase: fetchPopularMoviesUseCase, searchMoviesUseCase: searchMoviesUseCase)
+        
         let movieListViewController = MovieListViewController(viewModel: movieListViewModel)
         
         movieListViewController.onMovieSelected = { [weak self] movie in

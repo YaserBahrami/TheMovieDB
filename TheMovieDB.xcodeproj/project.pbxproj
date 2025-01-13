@@ -30,6 +30,8 @@
 		4399C4AA2D3479060047DD20 /* MovieListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4399C4A92D3479060047DD20 /* MovieListCoordinator.swift */; };
 		4399C4AC2D34807C0047DD20 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4399C4AB2D34807C0047DD20 /* Main.storyboard */; };
 		4399C4AE2D349C8E0047DD20 /* MovieTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4399C4AD2D349C8E0047DD20 /* MovieTableViewCell.swift */; };
+		4399C4B02D34B9820047DD20 /* FetchPopularMoviesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4399C4AF2D34B9820047DD20 /* FetchPopularMoviesUseCase.swift */; };
+		4399C4B22D34BC9B0047DD20 /* SearchMoviesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4399C4B12D34BC9B0047DD20 /* SearchMoviesUseCase.swift */; };
 		73EF7217FC0344E7F01DA978 /* Pods_TheMovieDBTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63856C6ABB631439EFAC8FDF /* Pods_TheMovieDBTests.framework */; };
 		7AAB7C72F384C03994356C11 /* Pods_TheMovieDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCF7066454DE5F6A75DA61A0 /* Pods_TheMovieDB.framework */; };
 		C98F60BECDF57FBE78401ADA /* Pods_TheMovieDB_TheMovieDBUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7262523F5936A95865AFA34 /* Pods_TheMovieDB_TheMovieDBUITests.framework */; };
@@ -82,6 +84,8 @@
 		4399C4A92D3479060047DD20 /* MovieListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListCoordinator.swift; sourceTree = "<group>"; };
 		4399C4AB2D34807C0047DD20 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		4399C4AD2D349C8E0047DD20 /* MovieTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieTableViewCell.swift; sourceTree = "<group>"; };
+		4399C4AF2D34B9820047DD20 /* FetchPopularMoviesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPopularMoviesUseCase.swift; sourceTree = "<group>"; };
+		4399C4B12D34BC9B0047DD20 /* SearchMoviesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMoviesUseCase.swift; sourceTree = "<group>"; };
 		5E3E5C31BD76D2A7DA4537C5 /* Pods-TheMovieDB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheMovieDB.release.xcconfig"; path = "Target Support Files/Pods-TheMovieDB/Pods-TheMovieDB.release.xcconfig"; sourceTree = "<group>"; };
 		63856C6ABB631439EFAC8FDF /* Pods_TheMovieDBTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TheMovieDBTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6599D13AFEC9FD1B80016D01 /* Pods-TheMovieDBTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheMovieDBTests.debug.xcconfig"; path = "Target Support Files/Pods-TheMovieDBTests/Pods-TheMovieDBTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -248,6 +252,8 @@
 		4399C4922D346D6E0047DD20 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
+				4399C4AF2D34B9820047DD20 /* FetchPopularMoviesUseCase.swift */,
+				4399C4B12D34BC9B0047DD20 /* SearchMoviesUseCase.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -575,8 +581,10 @@
 				4399C49E2D346F7C0047DD20 /* MovieRepositoryProtocol.swift in Sources */,
 				4399C49C2D346EFD0047DD20 /* AppConfig.swift in Sources */,
 				4399C48D2D3469680047DD20 /* MovieDetailsViewModel.swift in Sources */,
+				4399C4B22D34BC9B0047DD20 /* SearchMoviesUseCase.swift in Sources */,
 				4399C4AA2D3479060047DD20 /* MovieListCoordinator.swift in Sources */,
 				4399C4992D346E280047DD20 /* Endpoint.swift in Sources */,
+				4399C4B02D34B9820047DD20 /* FetchPopularMoviesUseCase.swift in Sources */,
 				4399C4852D3462150047DD20 /* AppCoordinator.swift in Sources */,
 				4399C4512D343F4D0047DD20 /* AppDelegate.swift in Sources */,
 				4399C4A82D3478B00047DD20 /* CoordinatorProtocol.swift in Sources */,
