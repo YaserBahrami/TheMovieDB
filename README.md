@@ -92,7 +92,8 @@ If I had more time, the following improvements and features could be added:
 ### 4. **Localization**
 - Add support for multiple languages to make the app accessible to users around the world.
 
-
+### 5. **Third-Party Dependencies**
+- If I had more time, I would avoid using third-party libraries like SDWebImage and SnapKit, opting for native solutions instead. 
 
 
 ## License
