@@ -9,13 +9,10 @@ import UIKit
 import SnapKit
 import Combine
 
-import UIKit
-import Combine
-
 class MovieListViewController: UIViewController {
     private let viewModel: MovieListViewModel
     private let tableView = UITableView()
-    private var cancellables = Set<AnyCancellable>() // Add this property
+    private var cancellables = Set<AnyCancellable>()
     var onMovieSelected: ((Movie) -> Void)?
 
     init(viewModel: MovieListViewModel) {
@@ -35,11 +32,11 @@ class MovieListViewController: UIViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = .white
         view.addSubview(tableView)
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "MovieCell")
     }
 
     private func bindViewModel() {
@@ -58,11 +55,9 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieTableViewCell
         let movie = viewModel.movies[indexPath.row]
-        print("//////")
-        print(movie)
-        cell.textLabel?.text = movie.title
+        cell.configure(with: movie)
         return cell
     }
 
