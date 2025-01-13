@@ -17,6 +17,7 @@ class MovieListViewController: UIViewController {
     
     private var filteredMovies: [Movie] = []
     private let searchBar = UISearchBar()
+    private var searchQuery = ""
     
     init(viewModel: MovieListViewModel) {
         self.viewModel = viewModel
@@ -35,7 +36,6 @@ class MovieListViewController: UIViewController {
     }
     
     private func setupKeyboardDismissal() {
-        // Add tap gesture recognizer to dismiss keyboard
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
@@ -66,6 +66,13 @@ class MovieListViewController: UIViewController {
             }
             .store(in: &cancellables)
         
+        viewModel.$searchedMovies
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.tableView.reloadData()
+            }
+            .store(in: &cancellables)
+        
         viewModel.$errorMessage
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
@@ -85,18 +92,20 @@ class MovieListViewController: UIViewController {
 
 extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.movies.count
+        return viewModel.isSearching ? viewModel.searchedMovies.count : viewModel.movies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieTableViewCell
-        let movie = viewModel.movies[indexPath.row]
+        let movie = viewModel.isSearching ? viewModel.searchedMovies[indexPath.row] : viewModel.movies[indexPath.row]
+        
         cell.configure(with: movie)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let movie = viewModel.movies[indexPath.row]
+        let movie = viewModel.isSearching ? viewModel.searchedMovies[indexPath.row] : viewModel.movies[indexPath.row]
+        
         onMovieSelected?(movie)
     }
 }
@@ -105,16 +114,32 @@ extension MovieListViewController: UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         dismissKeyboard()
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let threshold: CGFloat = 100
+        
+        guard scrollView.contentOffset.y + scrollView.frame.size.height + threshold >= scrollView.contentSize.height else {
+            return
+        }
+        
+        if !viewModel.isSearching {
+            viewModel.fetchPopularMovies()
+        } else {
+            return
+        }
+    }
 }
 
 extension MovieListViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchQuery = searchText
         viewModel.searchMovies(query: searchText)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
-        viewModel.searchMovies(query: "")
+        searchQuery = ""
+        viewModel.clearSearch()
         searchBar.resignFirstResponder()
     }
     

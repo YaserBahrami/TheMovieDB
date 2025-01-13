@@ -17,7 +17,10 @@ class MovieListViewModel {
     private var isLoading = false
     
     @Published var movies: [Movie] = []
+    @Published var searchedMovies: [Movie] = []
     @Published var errorMessage: String?
+    @Published var isSearching = false
+    
     
     private var searchQuery = PassthroughSubject<String, Never>()
     
@@ -30,12 +33,19 @@ class MovieListViewModel {
         setupSearchListener()
     }
     
-    private func fetchPopularMovies() {
+    func fetchPopularMovies() {
+        
+        guard !isLoading else { return }
+        isLoading = true
+        
+        
         fetchPopularMoviesUseCase.execute(page: currentPage) { [weak self] result in
             DispatchQueue.main.async {
+                self?.isLoading = false
                 switch result {
                 case .success(let newMovies):
-                    self?.movies = newMovies
+                    self?.movies.append(contentsOf: newMovies)
+                    self?.currentPage += 1
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }
@@ -44,7 +54,20 @@ class MovieListViewModel {
     }
     
     func searchMovies(query: String) {
-        searchQuery.send(query)
+        
+        if query.isEmpty {
+            clearSearch()
+        } else {
+            isSearching = true
+            searchedMovies = []
+            searchQuery.send(query)
+        }
+    }
+    
+    func clearSearch() {
+        isSearching = false
+        searchedMovies = []
+        fetchPopularMovies()
     }
     
     private func setupSearchListener() {
@@ -59,11 +82,14 @@ class MovieListViewModel {
     }
     
     private func handleSearchQuery(_ query: String) {
+        print("Handle Search Query: \(query)")
         if query.isEmpty {
-            fetchPopularMovies()
+            clearSearch()
         } else {
-            searchMoviesUseCase.execute(query: query, page: currentPage) { [weak self] result in
+            isLoading = true
+            searchMoviesUseCase.execute(query: query, page: 1) { [weak self] result in
                 DispatchQueue.main.async {
+                    self?.isLoading = false
                     self?.handleResult(result)
                 }
             }
@@ -73,7 +99,9 @@ class MovieListViewModel {
     private func handleResult(_ result: Result<[Movie], Error>) {
         switch result {
         case .success(let newMovies):
-            self.movies = newMovies
+            if !newMovies.isEmpty {
+                self.searchedMovies.append(contentsOf: newMovies)
+            }
         case .failure(let error):
             self.errorMessage = error.localizedDescription
         }

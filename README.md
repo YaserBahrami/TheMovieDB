@@ -4,8 +4,8 @@ This iOS application is built using Swift and the Combine framework, showcasing 
 
 ## Features
 
-- **Popular Movies List**: Displays a list of popular movies using the TMDb API.
-- **Search Movies**: Allows users to search for movies by name.
+- **Popular Movies List**: Displays a list of popular movies using the TMDb API with infinite scrolling (pagination) for seamless navigation through more movies as the user scrolls.
+- **Search Movies**: Allows users to search for movies by name and check top results.
 - **Movie Details**: Clicking on a movie opens a details page with more information such as title, release date, rating, and backdrop image.
 
 ## Technologies Used
@@ -78,22 +78,20 @@ This project follows the **MVVM** (Model-View-ViewModel) architecture along with
 
 If I had more time, the following improvements and features could be added:
 
-### 1. **Pagination and Lazy Loading**
-- The app currently fetches only the first page of movies. Implementing pagination would load additional pages as the user scrolls, improving performance and reducing load times.
 
-### 2. **Error Handling and User Feedback**
-- Improve the error handling UI, such as showing a retry button when a network request fails, instead of just displaying an error message.
-- Add better user feedback during loading states, such as a spinner or a loading animation.
-
-### 3. **Unit and UI Testing**
+### 1. **Unit and UI Testing**
 - Write unit tests for use cases, view models, and repositories.
 - Implement UI tests for ensuring the functionality of the search bar, movie list, and movie details screen.
 
+### 2. **Third-Party Dependencies**
+- If I had more time, I would avoid using third-party libraries like SDWebImage and SnapKit, opting for native solutions instead. 
+
+### 3. **Error Handling and User Feedback**
+- Improve the error handling UI, such as showing a retry button when a network request fails, instead of just displaying an error message.
+- Add better user feedback during loading states, such as a spinner or a loading animation.
+
 ### 4. **Localization**
 - Add support for multiple languages to make the app accessible to users around the world.
-
-### 5. **Third-Party Dependencies**
-- If I had more time, I would avoid using third-party libraries like SDWebImage and SnapKit, opting for native solutions instead. 
 
 
 ## License
