@@ -16,25 +16,34 @@ class MovieListViewController: UIViewController {
     var onMovieSelected: ((Movie) -> Void)?
     
     private var filteredMovies: [Movie] = []
-//    private var isSearching = false
     private let searchBar = UISearchBar()
-
+    
     init(viewModel: MovieListViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         bindViewModel()
-        viewModel.fetchPopularMovies()
+        setupKeyboardDismissal()
     }
-
+    
+    private func setupKeyboardDismissal() {
+        // Add tap gesture recognizer to dismiss keyboard
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard() {
+        searchBar.resignFirstResponder()
+    }
     private func setupUI() {
         view.backgroundColor = .systemBackground
         
@@ -48,7 +57,7 @@ class MovieListViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "MovieCell")
     }
-
+    
     private func bindViewModel() {
         viewModel.$movies
             .receive(on: DispatchQueue.main)
@@ -78,17 +87,23 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.movies.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieTableViewCell
         let movie = viewModel.movies[indexPath.row]
         cell.configure(with: movie)
         return cell
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let movie = viewModel.movies[indexPath.row]
         onMovieSelected?(movie)
+    }
+}
+
+extension MovieListViewController: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        dismissKeyboard()
     }
 }
 
@@ -96,10 +111,14 @@ extension MovieListViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         viewModel.searchMovies(query: searchText)
     }
-
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         viewModel.searchMovies(query: "")
         searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        dismissKeyboard()
     }
 }
