@@ -13,60 +13,57 @@ class MovieListViewModel {
     private var cancellables = Set<AnyCancellable>()
     private var currentPage = 1
     private var isLoading = false
-
+    
     @Published var movies: [Movie] = []
-    @Published var searchText: String = ""
-
+    @Published var errorMessage: String?
+    
+    private var searchQuery = PassthroughSubject<String, Never>()
+    
+    //    @Published var searchText: String = ""
+    
     init(repository: MovieRepositoryProtocol) {
         self.repository = repository
-        bindSearch()
+        setupSearchListener()
+        fetchPopularMovies()
     }
-
-    func fetchMovies() {
-        guard !isLoading else { return }
-        isLoading = true
-        repository.fetchPopularMovies(page: currentPage)
+    
+    func fetchPopularMovies() {
+        repository.fetchPopularMovies(page: 1)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion {
-                    print("Error fetching movies: \(error)")
-                }
-            }, receiveValue: { [weak self] movies in
-                self?.movies.append(contentsOf: movies)
-                self?.currentPage += 1
-            })
-            .store(in: &cancellables)
-    }
-
-    private func bindSearch() {
-        $searchText
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-            .removeDuplicates()
-            .sink { [weak self] query in
-                guard let self = self else { return }
-                if query.isEmpty {
-                    self.movies = []
-                    self.currentPage = 1
-                    self.fetchMovies()
-                } else {
-                    self.searchMovies(query: query)
-                }
-            }
-            .store(in: &cancellables)
-    }
-
-    private func searchMovies(query: String) {
-        repository.searchMovies(query: query, page: 1)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                if case .failure(let error) = completion {
-                    print("Error searching movies: \(error)")
+                if case let .failure(error) = completion {
+                    self?.errorMessage = error.localizedDescription
                 }
             }, receiveValue: { [weak self] movies in
                 self?.movies = movies
             })
             .store(in: &cancellables)
     }
+    
+    func searchMovies(query: String) {
+        searchQuery.send(query)
+    }
+    
+    private func setupSearchListener() {
+        searchQuery
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.global(qos: .userInteractive))
+            .removeDuplicates()
+            .sink { [weak self] query in
+                guard !query.isEmpty else {
+                    self?.fetchPopularMovies()
+                    return
+                }
+                self?.repository.searchMovies(query: query, page: 1)
+                    .receive(on: DispatchQueue.main)
+                    .sink(receiveCompletion: { completion in
+                        if case let .failure(error) = completion {
+                            self?.errorMessage = error.localizedDescription
+                        }
+                    }, receiveValue: { movies in
+                        self?.movies = movies
+                    })
+                    .store(in: &self!.cancellables)
+            }
+            .store(in: &cancellables)
+    }
 }
-

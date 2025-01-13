@@ -14,6 +14,10 @@ class MovieListViewController: UIViewController {
     private let tableView = UITableView()
     private var cancellables = Set<AnyCancellable>()
     var onMovieSelected: ((Movie) -> Void)?
+    
+    private var filteredMovies: [Movie] = []
+//    private var isSearching = false
+    private let searchBar = UISearchBar()
 
     init(viewModel: MovieListViewModel) {
         self.viewModel = viewModel
@@ -28,10 +32,16 @@ class MovieListViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         bindViewModel()
-        viewModel.fetchMovies()
+        viewModel.fetchPopularMovies()
     }
 
     private func setupUI() {
+        view.backgroundColor = .systemBackground
+        
+        searchBar.placeholder = "Search Movies"
+        searchBar.delegate = self
+        navigationItem.titleView = searchBar
+        
         view.addSubview(tableView)
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableView.delegate = self
@@ -46,7 +56,22 @@ class MovieListViewController: UIViewController {
                 self?.tableView.reloadData()
             }
             .store(in: &cancellables)
+        
+        viewModel.$errorMessage
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] errorMessage in
+                self?.showErrorAlert(message: errorMessage)
+            }
+            .store(in: &cancellables)
     }
+    
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
 
 extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
@@ -64,5 +89,17 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let movie = viewModel.movies[indexPath.row]
         onMovieSelected?(movie)
+    }
+}
+
+extension MovieListViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.searchMovies(query: searchText)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        viewModel.searchMovies(query: "")
+        searchBar.resignFirstResponder()
     }
 }
