@@ -22,6 +22,7 @@ class MovieListCoordinator: Coordinator {
         let movieListViewController = MovieListViewController(viewModel: movieListViewModel)
         
         movieListViewController.onMovieSelected = { [weak self] movie in
+            print("Movie selected: \(movie.title)") //print worked
             self?.showMovieDetails(for: movie)
         }
         let navigationController = UINavigationController(rootViewController: movieListViewController)
@@ -30,6 +31,7 @@ class MovieListCoordinator: Coordinator {
     }
     
     private func showMovieDetails(for movie: Movie) {
+        print("Navigating to movie details for: \(movie.title)") //nothing printed
         let movieDetailsViewModel = MovieDetailsViewModel(movie: movie)
         let movieDetailViewController = MovieDetailsViewController(viewModel: movieDetailsViewModel)
         
